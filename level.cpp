@@ -15,10 +15,10 @@ void LoadLevelFromFile(const std::string& filename)
 
 		while (file >> x >> y) 
 		{
-		Entity entity;  
-		entity.x = x;
-		entity.y = y; 
-		entities.push_back(entity); 
+			Entity entity;  
+			entity.x = x;
+			entity.y = y; 
+			entities.push_back(entity); 
 		}
 
 	    file.close(); 

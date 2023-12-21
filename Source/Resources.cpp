@@ -1,20 +1,7 @@
 #include "Resources.h"
 #include <iostream>;
 
-void Resources::Load()
+const Texture2D& getTexture(const MyTexture& t) noexcept
 {
-	std::cout << "Yay"; // yes
-	alienTexture = LoadTexture("./Assets/Alien.png");
-	barrierTexture = LoadTexture("./Assets/Barrier.png");
-	shipTextures.push_back(LoadTexture("./Assets/Ship1.png"));
-	shipTextures.push_back(LoadTexture("./Assets/Ship2.png"));
-	shipTextures.push_back(LoadTexture("./Assets/Ship3.png"));
-	laserTexture = LoadTexture("./Assets/Laser.png");
+	return t.get();
 }
-/*
-void Resources::Unload()
-{
-	UnloadTexture(barrierTexture);
-	UnloadTexture(alienTexture);
-}
-*/

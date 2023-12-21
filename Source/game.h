@@ -172,9 +172,9 @@ struct Game
 
 
 	// Entity Storage and Resources
-	Resources resources;
+	Resources resources{};
 
-	Player player;
+	Player player{};
 
 	std::vector<Projectile> Projectiles;
 
