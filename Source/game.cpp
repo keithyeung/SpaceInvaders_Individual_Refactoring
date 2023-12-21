@@ -260,9 +260,6 @@ void Game::Update()
 			}
 		}
 
-			
-		
-
 	break;
 	case State::ENDSCREEN:
 		//Code

@@ -23,35 +23,32 @@
 
 #include "raylib.h"
 #include "game.h"
+#include "../window.h"
 
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
+constexpr int SCREEN_WIDTH = 1920;
+constexpr int SCREEN_HEIGHT = 1080;
+constexpr std::string_view TITLE = "SPACE INVADERS";
+
 int main(void)
 {    
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 1920;
-    const int screenHeight = 1080;
-
-    InitWindow(screenWidth, screenHeight, "SPACE INVADERS");
+    Window window(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
 
     Game game = { State::STARTSCREEN };
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (!window.ShouldClose())    // Detect window close button or ESC key
     {
-       
-
         game.Update();
 
         BeginDrawing();
         ClearBackground(BLACK);
         game.Render();
         EndDrawing();
-        
     }
     std::string filename = "level.txt";  
 
