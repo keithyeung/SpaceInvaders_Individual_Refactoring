@@ -44,13 +44,6 @@ void Game::Start()
 		Walls.push_back(newWalls); 
 
 	}
-
-
-	//creating player
-	Player newPlayer;
-	player = newPlayer;
-	player.Initialize();
-
 	//creating aliens
 	SpawnAliens();
 	
@@ -137,7 +130,7 @@ void Game::Update()
 
 
 		// Update background with offset
-		playerPos = { player.x_pos, player.player_base_height };
+		playerPos = { player.position.x, player.player_base_height };
 		cornerPos = { 0, player.player_base_height };
 		offset = lineLength(playerPos, cornerPos) * -1;
 		background.Update(offset / 15);
@@ -178,7 +171,7 @@ void Game::Update()
 			{
 				if (Projectiles[i].type == EntityType::ENEMY_PROJECTILE)
 				{
-					if (CheckCollision({player.x_pos, GetScreenHeight() - player.player_base_height }, player.radius, Projectiles[i].lineStart, Projectiles[i].lineEnd))
+					if (CheckCollision({player.position.x, GetScreenHeight() - player.player_base_height }, PLAYER_RADIUS, Projectiles[i].lineStart, Projectiles[i].lineEnd))
 					{
 						std::cout << "dead!\n"; 
 						Projectiles[i].active = false; 
@@ -206,7 +199,7 @@ void Game::Update()
 		{
 			float window_height = (float)GetScreenHeight();
 			Projectile newProjectile;
-			newProjectile.position.x = player.x_pos;
+			newProjectile.position.x = player.position.x;
 			newProjectile.position.y = window_height - 130;
 			newProjectile.type = EntityType::PLAYER_PROJECTILE;
 			Projectiles.push_back(newProjectile);
@@ -395,11 +388,6 @@ void Game::Render()
 	case State::ENDSCREEN:
 		//Code
 		//DrawText("END", 50, 50, 40, YELLOW);
-
-
-		
-
-		
 
 
 		if (newHighScore)
@@ -629,80 +617,6 @@ bool Game::CheckCollision(Vector2 circlePos, float circleRadius, Vector2 lineSta
 
 }
 
-void Player::Initialize() 
-{
-	
-	float window_width = (float)GetScreenWidth();
-	x_pos = window_width / 2;
-	std::cout<< "Find Player -X:" << GetScreenWidth() / 2 << "Find Player -Y" << GetScreenHeight() - player_base_height << std::endl;
-
-}
-
-void Player::Update() 
-{
-
-	//Movement
-	direction = 0;
-	if (IsKeyDown(KEY_LEFT))
-	{
-		direction--;
-	}
-	if (IsKeyDown(KEY_RIGHT))
-	{
-		direction++;
-	}
-
-	x_pos += speed * direction;
-
-	if (x_pos < 0 + radius)
-	{
-		x_pos = 0 + radius;
-	}
-	else if (x_pos > GetScreenWidth() - radius)
-	{
-		x_pos = GetScreenWidth() - radius;
-	}
-
-
-	//Determine frame for animation
-	timer += GetFrameTime();
-
-	if (timer > 0.4 && activeTexture == 2)
-	{
-		activeTexture = 0;
-		timer = 0;
-	}
-	else if (timer > 0.4)
-	{
-		activeTexture++;
-		timer = 0;
-	}
-
-	
-}
-
-void Player::Render(Texture2D texture) 
-{
-	float window_height = GetScreenHeight(); 
-
-	DrawTexturePro(texture,
-		{
-			0,
-			0,
-			352,
-			352,
-		},
-		{
-			x_pos, window_height - player_base_height,
-			100,
-			100,
-		}, { 50, 50 },
-		0,
-		WHITE);
-}
-
-
-
 void Projectile::Update()
 {
 	position.y -= speed;
@@ -722,45 +636,14 @@ void Projectile::Update()
 
 void Projectile::Render(Texture2D texture)
 {
-	//DrawCircle((int)position.x, (int)position.y, 10, RED);
-	DrawTexturePro(texture,
-		{
-			0,
-			0,
-			176,
-			176,
-		},
-		{
-			position.x,
-			position.y,
-			50,
-			50,
-		}, { 25 , 25 },
-		0,
-		WHITE);
+	DrawTexture(texture, position.x, position.y, WHITE);
 }
 
 void Wall::Render(Texture2D texture)
 {
-	DrawTexturePro(texture,
-		{
-			0,
-			0,
-			704,
-			704,
-		},
-		{
-			position.x,
-			position.y,
-			200,
-			200,
-		}, { 100 , 100 },
-		0,
-		WHITE);
-
-
-	DrawText(TextFormat("%i", health), position.x-21, position.y+10, 40, RED);
-	
+	constexpr float offset = 100.0f;
+	DrawTexture(texture, position.x - offset, position.y - offset, WHITE);
+	DrawText(TextFormat("%i", health), position.x - 21, position.y + 10, 40, RED);
 }
 
 void Wall::Update() 
@@ -777,8 +660,6 @@ void Wall::Update()
 
 void Alien::Update() 
 {
-	int window_width = GetScreenWidth(); 
-
 	if (moveRight)
 	{
 		position.x += speed; 
@@ -803,26 +684,7 @@ void Alien::Update()
 
 void Alien::Render(Texture2D texture) 
 {
-	//DrawRectangle((int)position.x - 25, (int)position.y, 30, 30, RED);
-	//DrawCircle((int)position.x, (int)position.y, radius, GREEN);
-	
-	
-
-	DrawTexturePro(texture,
-		{
-			0,
-			0,
-			352,
-			352,
-		},
-		{
-			position.x,
-			position.y,
-			100,
-			100,
-		}, {50 , 50},
-		0,
-		WHITE);
+	DrawTexture(texture, position.x, position.y, WHITE);
 }
 
 

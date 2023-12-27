@@ -3,6 +3,7 @@
 #include <vector>
 #include "Resources.h"
 #include <string>
+#include "../player.h"
 
 
 enum struct State
@@ -25,28 +26,6 @@ struct PlayerData
 	std::string name;
 	int score;
 };
-
-struct Player
-{
-public:
-
-	float x_pos = 0;
-	float speed = 7;
-	float player_base_height = 70.0f;  
-	float radius = 50;
-	int lives = 3;
-	int direction = 0;
-	int activeTexture = 0;
-	float timer = 0;
-
-	EntityType type = EntityType::PLAYER;
-
-	void Initialize();
-	void Render(Texture2D texture);
-	void Update();
-	
-};
-
 
 struct Projectile
 {
@@ -148,7 +127,6 @@ struct Game
 	int formationY = 50;
 
 	bool newHighScore = false;
-	
 
 	void Start();
 	void End();
@@ -170,7 +148,6 @@ struct Game
 	void LoadLeaderboard();
 	void SaveLeaderboard();
 
-
 	// Entity Storage and Resources
 	Resources resources{};
 
@@ -185,8 +162,6 @@ struct Game
 	std::vector<PlayerData> Leaderboard = { {"Player 1", 500}, {"Player 2", 400}, {"Player 3", 300}, {"Player 4", 200}, {"Player 5", 100} };
 	
 	Background background;
-
-
 
 	Vector2 playerPos;
 	Vector2 alienPos; 
