@@ -9,40 +9,22 @@ bool is_dead(const auto& entity) noexcept {
 	return !entity.active;
 }
 
-float lineLength(Vector2 A, Vector2 B) //Uses pythagoras to calculate the length of a line
+float lineLength(Vector2 A, Vector2 B) noexcept//Uses pythagoras to calculate the length of a line
 {
-	float length = sqrtf(pow(B.x - A.x, 2) + pow(B.y - A.y, 2));
-
+	const float length = sqrtf(pow(B.x - A.x, 2) + pow(B.y - A.y, 2));
 	return length;
 }
-
-bool pointInCircle(Vector2 circlePos, float radius, Vector2 point) // Uses pythagoras to calculate if a point is within a circle or not
-{
-	float distanceToCentre = lineLength(circlePos, point);
-
-	if (distanceToCentre < radius)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
 
 void Game::Start()
 {
 	// creating walls 
-	float window_width = (float)GetScreenWidth(); 
-	float window_height = (float)GetScreenHeight(); 
-	float wall_distance = window_width / (wallCount + 1); 
+	float wall_distance = GetScreenHeight() / (wallCount + 1.0f); 
+	const float wallsPosYOffset = 300;
 	for (int i = 0; i < wallCount; i++)
 	{
 		Wall newWalls;
-		newWalls.position.y = window_height - 250; 
+		newWalls.position.y = GetScreenHeight() - wallsPosYOffset;
 		newWalls.position.x = wall_distance * (i + 1); 
-
 		Walls.push_back(newWalls); 
 
 	}
@@ -201,7 +183,7 @@ void Game::Update()
 		if (IsKeyPressed(KEY_SPACE))
 		{
 			const Vector2 spawnPosition{ player.position.x ,player.position.y - PROJECTILE_HEIGHT };
-			const int speed = 15;
+			constexpr int speed = 15;
 			PlayerBullets.push_back(Projectile(spawnPosition, speed));
 		}
 
@@ -218,7 +200,7 @@ void Game::Update()
 
 			Vector2 spawnPosition = Aliens[randomAlienIndex].position;
 			spawnPosition.y += 40;
-			const int speed = -15;
+			constexpr int speed = -15;
 
 			EnemyBullets.push_back(Projectile(spawnPosition, speed));
 			shootTimer = 0;
