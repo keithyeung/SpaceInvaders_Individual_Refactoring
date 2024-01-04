@@ -3,8 +3,10 @@
 #include <vector>
 #include "Resources.h"
 #include <string>
+#include <string_view>
 #include "../player.h"
 #include "../projectile.h"
+#include "../alien.h"
 
 
 enum struct State
@@ -34,25 +36,6 @@ public:
 
 	void Render(Texture2D texture); 
 	void Update(); 
-};
-
-struct Alien
-{
-public:
-	
-	Color color = WHITE; 
-	Vector2 position = {0, 0};
-	int x = 0; 
-	int y = 0; 
-	float radius = 30;
-	bool active = true;  
-	bool moveRight = true; 
-	
-
-	int speed = 2; 
-		 
-	void Update(); 
-	void Render(Texture2D texture); 
 };
 
 
@@ -95,11 +78,7 @@ struct Game
 	//Aliens stuff? (idk cause liv wrote this)
 	Rectangle rec = { 0, 0 ,0 ,0 }; 
 
-	int formationWidth = 8;
-	int formationHeight = 5;
-	int alienSpacing = 80;
-	int formationX = 100;
-	int formationY = 50;
+
 
 	bool newHighScore = false;
 
@@ -113,6 +92,7 @@ struct Game
 	void Render();
 
 	void SpawnAliens();
+	void SpawnWalls();
 
 	bool CheckCollision(Vector2 circlePos, float circleRadius, Vector2 lineTop, Vector2 lineBottom);
 

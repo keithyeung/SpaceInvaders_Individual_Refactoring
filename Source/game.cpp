@@ -18,16 +18,7 @@ float lineLength(Vector2 A, Vector2 B) noexcept//Uses pythagoras to calculate th
 void Game::Start()
 {
 	// creating walls 
-	float wall_distance = GetScreenHeight() / (wallCount + 1.0f); 
-	const float wallsPosYOffset = 300;
-	for (int i = 0; i < wallCount; i++)
-	{
-		Wall newWalls;
-		newWalls.position.y = GetScreenHeight() - wallsPosYOffset;
-		newWalls.position.x = wall_distance * (i + 1); 
-		Walls.push_back(newWalls); 
-
-	}
+	SpawnWalls();
 	//creating aliens
 	SpawnAliens();
 	
@@ -427,18 +418,33 @@ void Game::Render()
 
 void Game::SpawnAliens()
 {
+	constexpr float alienSpacing = 80.0f;
+	constexpr int formationWidth = 8;
+	constexpr int formationHeight = 5;
+	constexpr float formationX = 100.0f;
+	constexpr float formationY = 50.0f;
+	constexpr float InitialXOffset = 450.0f;
 	for (int row = 0; row < formationHeight; row++) {
 		for (int col = 0; col < formationWidth; col++) {
-			Alien newAlien = Alien();
-			newAlien.active = true;
-			newAlien.position.x = formationX + 450 + (col * alienSpacing);
-			newAlien.position.y = formationY + (row * alienSpacing);
+			Alien newAlien{
+				formationX + InitialXOffset + (col * alienSpacing),
+				formationY + (row * alienSpacing)};
 			Aliens.push_back(newAlien);
-			std::cout << "Find Alien -X:" << newAlien.position.x << std::endl;
-			std::cout << "Find Alien -Y:" << newAlien.position.y << std::endl;
 		}
 	}
+}
 
+void Game::SpawnWalls()
+{
+	const float wall_distance = GetScreenWidth() / (wallCount + 1.0f);
+	constexpr float wallsPosYOffset = 300;
+	for (int i = 0; i < wallCount; i++)
+	{
+		Wall newWalls;
+		newWalls.position.y = GetScreenHeight() - wallsPosYOffset;
+		newWalls.position.x = wall_distance * (i + 1);
+		Walls.push_back(newWalls);
+	}
 }
 
 bool Game::CheckNewHighScore()
@@ -525,37 +531,6 @@ void Wall::Update()
 	{
 		active = false;
 	}
-
-
-}
-
-void Alien::Update() 
-{
-	if (moveRight)
-	{
-		position.x += speed; 
-
-		if (position.x >= GetScreenWidth())
-		{
-			moveRight = false; 
-			position.y += 50; 
-		}
-	}
-	else 
-	{
-		position.x -= speed; 
-
-		if (position.x <= 0)
-		{
-			moveRight = true; 
-			position.y += 50; 
-		}
-	}
-}
-
-void Alien::Render(Texture2D texture) 
-{
-	DrawTexture(texture, position.x, position.y, WHITE);
 }
 
 
