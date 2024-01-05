@@ -9,7 +9,6 @@ class Player
 	int direction = 0;
 	float timer = 0;
 public:
-	Player() noexcept;
 	int activeTexture = 0;
 	int lives = 3;
 	float player_base_height = 100.0f;

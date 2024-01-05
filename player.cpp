@@ -1,9 +1,5 @@
 #include "player.h"
 
-Player::Player() noexcept
-{
-}
-
 void Player::Render(Texture2D p_texture) noexcept
 {
 	constexpr float offset = 50.0f;

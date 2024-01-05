@@ -11,8 +11,8 @@ bool is_dead(const auto& entity) noexcept {
 
 float lineLength(Vector2 A, Vector2 B) noexcept//Uses pythagoras to calculate the length of a line
 {
-	const float length = sqrtf(pow(B.x - A.x, 2) + pow(B.y - A.y, 2));
-	return length;
+	const double length = sqrtf(pow(B.x - A.x, 2) + pow(B.y - A.y, 2));
+	return static_cast<float>(length);
 }
 
 void Game::Start()
@@ -121,7 +121,6 @@ void Game::Update()
 		{
 			enemyBullet.Update();
 		}
-		//UPDATE PROJECTILE
 		for (auto& wall : Walls)
 		{
 			wall.Update();
@@ -132,7 +131,8 @@ void Game::Update()
 		{
 			for (auto& wall : Walls)
 			{
-				if (CheckCollisionCircleRec(wall.position, wall.radius, enemyBullet.rect))
+				const float Wallradius = 60.0f;
+				if (CheckCollisionCircleRec(wall.position, Wallradius, enemyBullet.rect))
 				{
 					enemyBullet.active = false;
 					wall.health -= 1;
@@ -151,7 +151,8 @@ void Game::Update()
 		{
 			for (auto& wall : Walls)
 			{
-				if (CheckCollisionCircleRec(wall.position, wall.radius, playerBullet.rect))
+				const float Wallradius = 60.0f;
+				if (CheckCollisionCircleRec(wall.position, Wallradius, playerBullet.rect))
 				{
 					playerBullet.active = false;
 					wall.health -= 1;
@@ -334,10 +335,6 @@ void Game::Render()
 
 		break;
 	case State::ENDSCREEN:
-		//Code
-		//DrawText("END", 50, 50, 40, YELLOW);
-
-
 		if (newHighScore)
 		{
 			DrawText("NEW HIGHSCORE!", 600, 300, 60, YELLOW);
@@ -438,10 +435,10 @@ void Game::SpawnWalls()
 	constexpr float wallsPosYOffset = 300;
 	for (int i = 0; i < wallCount; i++)
 	{
-		Wall newWalls; //TODO: needs a ctor, and use emplace black
-		newWalls.position.y = GetScreenHeightF() - wallsPosYOffset;
-		newWalls.position.x = wall_distance * (i + 1);
-		Walls.push_back(newWalls);
+		 //TODO: needs a ctor, and use emplace black
+		const auto ypos = GetScreenHeightF() - wallsPosYOffset;
+		const auto xpos = wall_distance * (i + 1);
+		Walls.emplace_back(xpos,ypos);
 	}
 }
 
@@ -510,10 +507,6 @@ void Game::SaveLeaderboard()
 }
 
 
-
-
-
-
 //BACKGROUND
 void Star::Update(float starOffset)
 {
@@ -534,13 +527,13 @@ void Background::Initialize(int starAmount)
 	{
 		Star newStar;
 
-		newStar.initPosition.x = GetRandomValue(-150, GetScreenWidth() + 150);
-		newStar.initPosition.y = GetRandomValue(0, GetScreenHeight());
+		newStar.initPosition.x = GetRandomValueF(-150, GetScreenWidth() + 150);
+		newStar.initPosition.y = GetRandomValueF(0, GetScreenHeight());
 		
 		//random color?
 		newStar.color = SKYBLUE;
 
-		newStar.size = GetRandomValue(1, 4) / 2;
+		newStar.size = GetRandomValueF(1, 4) / 2.0f;
 
 		Stars.push_back(newStar);
 
@@ -549,18 +542,18 @@ void Background::Initialize(int starAmount)
 
 void Background::Update(float offset)
 {
-	for (int i = 0; i < Stars.size(); i++)
+	for (auto& i : Stars)
 	{
-		Stars[i].Update(offset);
+		i.Update(offset);
 	}
 	
 }
 
 void Background::Render()
 {
-	for (int i = 0; i < Stars.size(); i++)
+	for (auto& i : Stars)
 	{
-		Stars[i].Render();
+		i.Render();
 	}
 }
 

@@ -1,22 +1,16 @@
 #pragma once
 #include "raylib.h"
 
+
 class Wall
 {
 public:
-	Wall();
-	~Wall();
+	Wall(float initialX, float initialY) noexcept;
 
 	Vector2 position;
-	Rectangle rec;
+	float health = 50.0f;
 	bool active;
-	Color color;
-	int health = 50;
-	const int radius = 60;
-
-	void Render(const Texture2D texture) noexcept;
+	void Render(Texture2D texture) noexcept;
 	void Update() noexcept;
-private:
-
 };
 

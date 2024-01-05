@@ -1,6 +1,7 @@
 #pragma once
 #include "raylib.h"
 
+
 class Alien
 {
 public:
@@ -8,14 +9,13 @@ public:
 
 	Color color = WHITE;
 	Vector2 position = { 0, 0 };
-	const float radius = 30;
-	bool active = true;
+	float radius = 30;
+	bool active;
 	bool moveRight = true;
-	const int speed = 2;
+	int speed = 2;
 
 	void Update() noexcept;
-	void Render(const Texture2D texture) noexcept;
-private:
+	void Render(Texture2D texture) noexcept;
 
 };
 

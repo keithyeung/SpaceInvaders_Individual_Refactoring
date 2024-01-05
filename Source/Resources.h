@@ -15,6 +15,10 @@ static inline float GetScreenWidthF() noexcept {
 	return static_cast<float>(GetScreenWidth());
 }
 
+static inline float GetRandomValueF(int x, int y) noexcept {
+	return static_cast<float>(GetRandomValue(x, y));
+}
+
 
 struct MyTexture
 {

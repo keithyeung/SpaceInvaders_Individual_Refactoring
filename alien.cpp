@@ -1,5 +1,5 @@
 #include "alien.h"
-
+#include "Source/Resources.h"
 
 Alien::Alien(float initialX, float initialY) noexcept : active(true), position{ initialX, initialY } {}
 
@@ -10,7 +10,7 @@ void Alien::Update() noexcept
 	{
 		position.x += speed;
 
-		if (position.x >= GetScreenWidth())
+		if (position.x >= GetScreenWidthF())
 		{
 			moveRight = false;
 			position.y += 50;
@@ -28,7 +28,7 @@ void Alien::Update() noexcept
 	}
 }
 
-void Alien::Render(const Texture2D texture) noexcept
+void Alien::Render(Texture2D texture) noexcept
 {
 	DrawTexture(texture, position.x, position.y, WHITE);
 }
