@@ -1,16 +1,8 @@
 #include "alien.h"
 
-Alien::Alien() noexcept : active(true)
-{
-}
 
-Alien::Alien(float initialX, float initialY) : active(true), position{ initialX, initialY }
-{
-}
+Alien::Alien(float initialX, float initialY) noexcept : active(true), position{ initialX, initialY } {}
 
-Alien::~Alien()
-{
-}
 
 void Alien::Update() noexcept
 {
@@ -36,7 +28,7 @@ void Alien::Update() noexcept
 	}
 }
 
-void Alien::Render(Texture2D texture) noexcept
+void Alien::Render(const Texture2D texture) noexcept
 {
 	DrawTexture(texture, position.x, position.y, WHITE);
 }

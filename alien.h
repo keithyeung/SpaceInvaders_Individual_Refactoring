@@ -4,21 +4,17 @@
 class Alien
 {
 public:
-	Alien() noexcept;
-	Alien(float initialX, float initialY);
-	~Alien();
+	Alien(float initialX, float initialY) noexcept;
 
 	Color color = WHITE;
 	Vector2 position = { 0, 0 };
-	int x = 0;
-	int y = 0;
-	float radius = 30;
+	const float radius = 30;
 	bool active = true;
 	bool moveRight = true;
-	int speed = 2;
+	const int speed = 2;
 
 	void Update() noexcept;
-	void Render(Texture2D texture) noexcept;
+	void Render(const Texture2D texture) noexcept;
 private:
 
 };

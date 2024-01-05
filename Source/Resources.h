@@ -7,6 +7,14 @@
 
 using namespace std::literals::string_view_literals;
 
+static inline float GetScreenHeightF() noexcept {
+	return static_cast<float>(GetScreenHeight());
+}
+
+static inline float GetScreenWidthF() noexcept {
+	return static_cast<float>(GetScreenWidth());
+}
+
 
 struct MyTexture
 {
@@ -51,7 +59,7 @@ struct Resources
 {
 	std::vector<MyTexture> shipTextures;
 
-	Resources() 
+	Resources()
 	{
 		shipTextures.reserve(3);
 		shipTextures.emplace_back("./Assets/Ship1.png"sv);

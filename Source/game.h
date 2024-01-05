@@ -7,6 +7,7 @@
 #include "../player.h"
 #include "../projectile.h"
 #include "../alien.h"
+#include "../Wall.h"
 
 
 enum struct State
@@ -23,22 +24,6 @@ struct PlayerData
 };
 
 
-struct Wall 
-{
-public: 
-	Vector2 position; 
-	Rectangle rec; 
-	bool active; 
-	Color color; 
-	int health = 50;
-	int radius = 60;
-
-
-	void Render(Texture2D texture); 
-	void Update(); 
-};
-
-
 struct Star
 {
 	Vector2 initPosition = { 0, 0 };
@@ -51,10 +36,7 @@ struct Star
 
 struct Background
 {
-	
-
 	std::vector<Star> Stars;
-
 	void Initialize(int starAmount);
 	void Update(float offset);
 	void Render();
@@ -69,16 +51,11 @@ struct Game
 	// Score
 	int score;
 
-	// for later, make a file where you can adjust the number of walls (config file) 
-	int wallCount = 5;
-
 	//Aliens shooting
 	float shootTimer = 0;
 
 	//Aliens stuff? (idk cause liv wrote this)
 	Rectangle rec = { 0, 0 ,0 ,0 }; 
-
-
 
 	bool newHighScore = false;
 
@@ -93,8 +70,6 @@ struct Game
 
 	void SpawnAliens();
 	void SpawnWalls();
-
-	bool CheckCollision(Vector2 circlePos, float circleRadius, Vector2 lineTop, Vector2 lineBottom);
 
 	bool CheckNewHighScore();
 

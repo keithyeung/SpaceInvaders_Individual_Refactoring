@@ -33,6 +33,18 @@ constexpr int SCREEN_WIDTH = 1920;
 constexpr int SCREEN_HEIGHT = 1080;
 constexpr std::string_view TITLE = "SPACE INVADERS";
 
+//TODO: start making slide drafts. One slide, one smell/issue. Sort on severity. 
+//      Always add a "future work" or "remaining issues" at the end, to let you demonstrate knowledge even if you didn't have time to fix the code in question.
+//TODO: make sure you handle the exceptions in main
+// TODO: physical structure. Extract all types into separate files. 
+//TODO: review all interfaces. 
+//  Delete unused / unecessary stuff. 
+//  Make const when possible (all render!),
+//  make noexcept when possible (almost everything that doesn't allocate, or calls functions that are documented to throw, like std::from_chars)
+//TODO: reduce branching, nesting and function length. (perhaps branches are better expressed as functions? perhaps some features are missing a class (Animation))
+// 
+//
+
 int main(void)
 {    
     Window window(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);

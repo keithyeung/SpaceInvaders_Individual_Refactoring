@@ -213,8 +213,6 @@ void Game::Update()
 			Continue();
 		}
 
-	
-
 		if (newHighScore)
 		{
 			if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
@@ -426,22 +424,22 @@ void Game::SpawnAliens()
 	constexpr float InitialXOffset = 450.0f;
 	for (int row = 0; row < formationHeight; row++) {
 		for (int col = 0; col < formationWidth; col++) {
-			Alien newAlien{
-				formationX + InitialXOffset + (col * alienSpacing),
-				formationY + (row * alienSpacing)};
-			Aliens.push_back(newAlien);
+			const auto xpos = formationX + InitialXOffset + (col * alienSpacing);
+			const auto ypos = formationY + (row * alienSpacing);	
+			Aliens.emplace_back(xpos, ypos);
 		}
 	}
 }
 
 void Game::SpawnWalls()
 {
+	constexpr int wallCount = 5;
 	const float wall_distance = GetScreenWidth() / (wallCount + 1.0f);
 	constexpr float wallsPosYOffset = 300;
 	for (int i = 0; i < wallCount; i++)
 	{
-		Wall newWalls;
-		newWalls.position.y = GetScreenHeight() - wallsPosYOffset;
+		Wall newWalls; //TODO: needs a ctor, and use emplace black
+		newWalls.position.y = GetScreenHeightF() - wallsPosYOffset;
 		newWalls.position.x = wall_distance * (i + 1);
 		Walls.push_back(newWalls);
 	}
@@ -449,12 +447,7 @@ void Game::SpawnWalls()
 
 bool Game::CheckNewHighScore()
 {
-	if (score > Leaderboard[4].score)
-	{
-		return true;
-	}
-
-	return false;
+	return (score > Leaderboard[4].score);
 }
 
 void Game::InsertNewHighScore(std::string name)
@@ -516,22 +509,9 @@ void Game::SaveLeaderboard()
 	// CLOSE FILE
 }
 
-void Wall::Render(Texture2D texture)
-{
-	constexpr float offset = 100.0f;
-	DrawTexture(texture, position.x - offset, position.y - offset, WHITE);
-	DrawText(TextFormat("%i", health), position.x - 21, position.y + 10, 40, RED);
-}
 
-void Wall::Update() 
-{
 
-	// set walls as inactive when out of health
-	if (health < 1)
-	{
-		active = false;
-	}
-}
+
 
 
 //BACKGROUND
