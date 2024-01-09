@@ -28,7 +28,7 @@ struct Background
 {
 	std::vector<Star> Stars;
 	void Initialize(int starAmount);
-	void Render() noexcept;
+	void Render() const noexcept;
 
 };
 
@@ -47,6 +47,9 @@ struct Game
 	Rectangle rec = { 0, 0 ,0 ,0 }; 
 
 	bool newHighScore = false;
+
+	//Game Constructor
+	Game();
 
 	void Start();
 	void End();
@@ -81,7 +84,7 @@ struct Game
 
 	std::vector<PlayerData> Leaderboard = { {"Player 1", 500}, {"Player 2", 400}, {"Player 3", 300}, {"Player 4", 200}, {"Player 5", 100} };
 	
-	Background background;
+	Background background{};
 
 	//TEXTBOX ENTER
 	char name[9 + 1] = "\0";      //One extra space required for null terminator char '\0'

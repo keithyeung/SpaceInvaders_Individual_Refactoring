@@ -15,6 +15,14 @@ float lineLength(Vector2 A, Vector2 B) noexcept//Uses pythagoras to calculate th
 	return static_cast<float>(length);
 }
 
+Game::Game() 
+{
+	// creating walls 
+	SpawnWalls();
+	//creating aliens
+	SpawnAliens();
+}
+
 void Game::Start()
 {
 	// creating walls 
@@ -273,6 +281,8 @@ void Game::Update()
 	}
 }
 
+#include "Resources.h"
+
 
 void Game::Render()
 {
@@ -299,28 +309,23 @@ void Game::Render()
 
 		//player rendering 
 		player.Render(resources.shipTextures[player.activeTexture].get());
-
 		//projectile rendering
-		for (auto& playerBullet : PlayerBullets)
-		{
-			playerBullet.Render(getTexture(resources.laserTexture));
-		}
-		for (auto& enemyBullet : EnemyBullets)
-		{
-			enemyBullet.Render(getTexture(resources.laserTexture));
-		}
-
+		render(PlayerBullets, resources.laserTexture);
+		render(EnemyBullets, resources.laserTexture);
+		render(Walls, resources.barrierTexture);
+		render(Aliens, resources.alienTexture);
+		//TODO: Remove the for loops below.
 		// wall rendering 
-		for (auto& wall : Walls)
-		{
-			wall.Render(getTexture(resources.barrierTexture)); 
-		}
+		//for (auto& wall : Walls)
+		//{
+		//	wall.Render(getTexture(resources.barrierTexture)); 
+		//}
 
-		//alien rendering  
-		for (auto& alien : Aliens)
-		{
-			alien.Render(getTexture(resources.alienTexture));
-		}
+		////alien rendering  
+		//for (auto& alien : Aliens)
+		//{
+		//	alien.Render(getTexture(resources.alienTexture));
+		//}
 
 
 		break;
@@ -412,8 +417,9 @@ void Game::SpawnAliens()
 	for (int row = 0; row < formationHeight; row++) {
 		for (int col = 0; col < formationWidth; col++) {
 			const auto xpos = formationX + InitialXOffset + (col * alienSpacing);
-			const auto ypos = formationY + (row * alienSpacing);	
-			Aliens.emplace_back(xpos, ypos);
+			const auto ypos = formationY + (row * alienSpacing);
+			auto a = Alien{xpos, ypos};
+			Aliens.emplace_back(a);
 		}
 	}
 }
@@ -424,8 +430,7 @@ void Game::SpawnWalls()
 	const float wall_distance = GetScreenWidth() / (wallCount + 1.0f);
 	constexpr float wallsPosYOffset = 300;
 	for (int i = 0; i < wallCount; i++)
-	{
-		 //TODO: needs a ctor, and use emplace black
+	{		
 		const auto ypos = GetScreenHeightF() - wallsPosYOffset;
 		const auto xpos = wall_distance * (i + 1);
 		Walls.emplace_back(xpos,ypos);
@@ -434,7 +439,7 @@ void Game::SpawnWalls()
 
 bool Game::CheckNewHighScore() noexcept
 {
-	return (score > Leaderboard[4].score);
+	return (score > Leaderboard.back().score);
 }
 
 void Game::InsertNewHighScore(std::string name)
@@ -507,9 +512,9 @@ void Background::Initialize(int starAmount)
 	}
 }
 
-void Background::Render() noexcept
+void Background::Render() const noexcept
 {
-	for (auto& i : Stars)
+	for (const auto& i : Stars)
 	{
 		i.Render();
 	}

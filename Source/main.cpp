@@ -42,7 +42,7 @@ constexpr std::string_view TITLE = "SPACE INVADERS";
 //  Make const when possible (all render!),
 //  make noexcept when possible (almost everything that doesn't allocate, or calls functions that are documented to throw, like std::from_chars)
 //TODO: reduce branching, nesting and function length. (perhaps branches are better expressed as functions? perhaps some features are missing a class (Animation))
-// 
+// TODO: catch the exceptions in main, and display a message box with the error message.
 //
 
 int main(void)
@@ -51,7 +51,7 @@ int main(void)
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
 
-    Game game = { State::STARTSCREEN };
+    Game game{};
     // Main game loop
     while (!window.ShouldClose())    // Detect window close button or ESC key
     {

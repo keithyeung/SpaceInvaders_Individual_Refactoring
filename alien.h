@@ -1,23 +1,16 @@
 #pragma once
 #include "raylib.h"
+#include "Source/Resources.h"
 
-
-class Alien
-{
-public:
-	Alien(float initialX, float initialY) noexcept;
-
-	Color color = WHITE;
+struct Alien{
+	static constexpr float radius = 30;					
 	Vector2 position = { 0, 0 };
-	float radius = 30;
-	bool active;
-	bool moveRight = true;
 	int speed = 2;
+	bool active = true;	
 	
-
 	void Update() noexcept;
-	void Render(Texture2D texture) noexcept;
-	void CheckDirection() noexcept;
-
+	void Render(const MyTexture& tex) const noexcept;
+private:
+	bool needToTurn() const noexcept;
 };
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "Source/Resources.h"
 
 
 class Wall
@@ -8,9 +9,10 @@ public:
 	Wall(float initialX, float initialY) noexcept;
 
 	Vector2 position;
-	float health = 50.0f;
-	bool active;
-	void Render(Texture2D texture) noexcept;
+	int health = 50;
+	bool active = true;
+	void Render(const MyTexture& tex) const noexcept;
 	void Update() noexcept;
+	//make a funtion to check if the wall is active if needed
 };
 

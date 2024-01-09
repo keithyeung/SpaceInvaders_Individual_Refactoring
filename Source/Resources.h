@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <format>
+#include <span>
 
 using namespace std::literals::string_view_literals;
 
@@ -77,3 +78,10 @@ struct Resources
 
 
 };
+
+template<typename T>
+static inline void render(std::vector<T> objects, const MyTexture& tex) noexcept {
+	for (const auto& i : objects) {
+		i.Render(tex);
+	}
+}
