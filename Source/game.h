@@ -8,6 +8,7 @@
 #include "../projectile.h"
 #include "../alien.h"
 #include "../Wall.h"
+#include "../Star.h"
 
 
 enum struct State
@@ -23,23 +24,11 @@ struct PlayerData
 	int score;
 };
 
-
-struct Star
-{
-	Vector2 initPosition = { 0, 0 };
-	Vector2 position = { 0, 0 };
-	Color color = GRAY;
-	float size = 0;
-	void Update(float starOffset);
-	void Render();
-};
-
 struct Background
 {
 	std::vector<Star> Stars;
 	void Initialize(int starAmount);
-	void Update(float offset);
-	void Render();
+	void Render() noexcept;
 
 };
 
@@ -71,7 +60,7 @@ struct Game
 	void SpawnAliens();
 	void SpawnWalls();
 
-	bool CheckNewHighScore();
+	bool CheckNewHighScore() noexcept;
 
 	void InsertNewHighScore(std::string name);
 
@@ -93,13 +82,6 @@ struct Game
 	std::vector<PlayerData> Leaderboard = { {"Player 1", 500}, {"Player 2", 400}, {"Player 3", 300}, {"Player 4", 200}, {"Player 5", 100} };
 	
 	Background background;
-
-	Vector2 playerPos;
-	Vector2 alienPos; 
-	Vector2 cornerPos;
-	float offset;
-
-
 
 	//TEXTBOX ENTER
 	char name[9 + 1] = "\0";      //One extra space required for null terminator char '\0'

@@ -104,14 +104,6 @@ void Game::Update()
 			SpawnAliens();
 		}
 
-
-		// Update background with offset
-		playerPos = { player.position.x, player.player_base_height };
-		cornerPos = { 0, player.player_base_height };
-		offset = lineLength(playerPos, cornerPos) * -1;
-		background.Update(offset / 15);
-
-
 		//UPDATE PROJECTILE
 		for (auto& playerBullet : PlayerBullets)
 		{
@@ -273,8 +265,6 @@ void Game::Update()
 
 
 		}
-		
-
 
 		break;
 	default:
@@ -442,7 +432,7 @@ void Game::SpawnWalls()
 	}
 }
 
-bool Game::CheckNewHighScore()
+bool Game::CheckNewHighScore() noexcept
 {
 	return (score > Leaderboard[4].score);
 }
@@ -507,49 +497,17 @@ void Game::SaveLeaderboard()
 }
 
 
-//BACKGROUND
-void Star::Update(float starOffset)
-{
-	position.x = initPosition.x + starOffset;
-	position.y = initPosition.y;
-
-}
-
-void Star::Render()
-{
-	DrawCircle((int)position.x, (int)position.y, size, color);
-}
-
-
 void Background::Initialize(int starAmount)
 {
 	for (int i = 0; i < starAmount; i++)
 	{
-		Star newStar;
-
-		newStar.initPosition.x = GetRandomValueF(-150, GetScreenWidth() + 150);
-		newStar.initPosition.y = GetRandomValueF(0, GetScreenHeight());
-		
-		//random color?
-		newStar.color = SKYBLUE;
-
-		newStar.size = GetRandomValueF(1, 4) / 2.0f;
-
-		Stars.push_back(newStar);
-
+		float posX = GetRandomValueF(-150, GetScreenWidth() + 150);
+		float posY = GetRandomValueF(0, GetScreenHeight());
+		Stars.emplace_back(posX,posY);
 	}
 }
 
-void Background::Update(float offset)
-{
-	for (auto& i : Stars)
-	{
-		i.Update(offset);
-	}
-	
-}
-
-void Background::Render()
+void Background::Render() noexcept
 {
 	for (auto& i : Stars)
 	{

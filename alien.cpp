@@ -6,29 +6,25 @@ Alien::Alien(float initialX, float initialY) noexcept : active(true), position{ 
 
 void Alien::Update() noexcept
 {
-	if (moveRight)
-	{
-		position.x += speed;
-
-		if (position.x >= GetScreenWidthF())
-		{
-			moveRight = false;
-			position.y += 50;
-		}
-	}
-	else
-	{
-		position.x -= speed;
-
-		if (position.x <= 0)
-		{
-			moveRight = true;
-			position.y += 50;
-		}
-	}
+	position.x += moveRight ? speed : -speed;
+	CheckDirection();
 }
 
+void Alien::CheckDirection() noexcept
+{
+	if (position.x >= GetScreenWidthF() - 100)
+	{
+		moveRight = false;
+		position.y += 50;
+	}
+	else if (position.x <= 100)
+	{
+		moveRight = true;
+		position.y += 50;
+	}
+}
 void Alien::Render(Texture2D texture) noexcept
 {
 	DrawTexture(texture, position.x, position.y, WHITE);
 }
+

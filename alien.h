@@ -13,9 +13,11 @@ public:
 	bool active;
 	bool moveRight = true;
 	int speed = 2;
+	
 
 	void Update() noexcept;
 	void Render(Texture2D texture) noexcept;
+	void CheckDirection() noexcept;
 
 };
 
