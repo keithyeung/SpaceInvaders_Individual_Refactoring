@@ -7,6 +7,7 @@ class Window
 public:
 	Window(int screen_widht, int screen_height, std::string_view title)noexcept {
 		InitWindow(screen_widht, screen_height, title.data());
+		SetTargetFPS(60);
 	}
 
 	Window(const Window& other) noexcept = delete;

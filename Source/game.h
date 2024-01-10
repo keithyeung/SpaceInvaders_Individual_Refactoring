@@ -59,6 +59,7 @@ struct Game
 
 	void Update();
 	void Render();
+	void RenderGamePlay() noexcept;
 
 	void SpawnAliens();
 	void SpawnWalls();

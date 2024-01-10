@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
+#include <span>
 
 
 bool is_dead(const auto& entity) noexcept {
@@ -286,55 +287,21 @@ void Game::Update()
 
 void Game::Render()
 {
+	BeginDrawing();
+	ClearBackground(BLACK);
 	switch (gameState)
 	{
 	case State::STARTSCREEN:
-		//Code
 		DrawText("SPACE INVADERS", 200, 100, 160, YELLOW);
-
 		DrawText("PRESS SPACE TO BEGIN", 200, 350, 40, YELLOW);
-
-
 		break;
 	case State::GAMEPLAY:
-		//Code
-
-
-		//background render LEAVE THIS AT TOP
-		background.Render();
-
-		//DrawText("GAMEPLAY", 50, 30, 40, YELLOW);
-		DrawText(TextFormat("Score: %i", score), 50, 20, 40, YELLOW);
-		DrawText(TextFormat("Lives: %i", player.lives), 50, 70, 40, YELLOW);
-
-		//player rendering 
-		player.Render(resources.shipTextures[player.activeTexture].get());
-		//projectile rendering
-		render(PlayerBullets, resources.laserTexture);
-		render(EnemyBullets, resources.laserTexture);
-		render(Walls, resources.barrierTexture);
-		render(Aliens, resources.alienTexture);
-		//TODO: Remove the for loops below.
-		// wall rendering 
-		//for (auto& wall : Walls)
-		//{
-		//	wall.Render(getTexture(resources.barrierTexture)); 
-		//}
-
-		////alien rendering  
-		//for (auto& alien : Aliens)
-		//{
-		//	alien.Render(getTexture(resources.alienTexture));
-		//}
-
-
+		RenderGamePlay();
 		break;
 	case State::ENDSCREEN:
 		if (newHighScore)
 		{
 			DrawText("NEW HIGHSCORE!", 600, 300, 60, YELLOW);
-
-
 
 			// BELOW CODE IS FOR NAME INPUT RENDER
 			DrawText("PLACE MOUSE OVER INPUT BOX!", 600, 400, 20, YELLOW);
@@ -390,20 +357,31 @@ void Game::Render()
 
 			for (int i = 0; i < Leaderboard.size(); i++)
 			{
-				char* tempNameDisplay = Leaderboard[i].name.data();
+				char* tempNameDisplay = Leaderboard[i].name.data(); // use string
 				DrawText(tempNameDisplay, 50, 140 + (i * 40), 40, YELLOW);
 				DrawText(TextFormat("%i", Leaderboard[i].score), 350, 140 + (i * 40), 40, YELLOW);
 			}
 		}
-
-		
-
-
 		break;
 	default:
 		//SHOULD NOT HAPPEN
 		break;
 	}
+	EndDrawing();
+}
+
+void Game::RenderGamePlay() noexcept
+{
+	background.Render();
+
+	DrawText(TextFormat("Score: %i", score), 50, 20, 40, YELLOW);
+	DrawText(TextFormat("Lives: %i", player.lives), 50, 70, 40, YELLOW);
+
+	player.Render(resources.shipTextures[player.activeTexture].get());
+	render(std::span(PlayerBullets), resources.laserTexture);
+	render(std::span(EnemyBullets), resources.laserTexture);
+	render(std::span(Walls), resources.barrierTexture);
+	render(std::span(Aliens), resources.alienTexture);
 }
 
 void Game::SpawnAliens()

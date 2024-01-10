@@ -24,6 +24,8 @@
 #include "raylib.h"
 #include "game.h"
 #include "../window.h"
+#include <iostream>
+#include <stdexcept>
 
 
 //------------------------------------------------------------------------------------
@@ -46,23 +48,30 @@ constexpr std::string_view TITLE = "SPACE INVADERS";
 //
 
 int main(void)
-{    
-    Window window(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
-
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-
-    Game game{};
-    // Main game loop
-    while (!window.ShouldClose())    // Detect window close button or ESC key
+{
+    try
     {
-        game.Update();
+        Window window(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
+        Game game{};
+        // Main game loop
+        while (!window.ShouldClose())  // Detect window close button or ESC key
+        {
+            game.Update();
+            game.Render();
+        }
 
-        BeginDrawing();
-        ClearBackground(BLACK);
-        game.Render();
-        EndDrawing();
+        std::string filename = "level.txt";
     }
-    std::string filename = "level.txt";  
+    catch (const std::exception& e)
+    {
+        std::cerr << "Exception caught: " << e.what() << std::endl;
+        TraceLog(LOG_ERROR,"Exception caught : %s", e.what());
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown exception caught." << std::endl;
+        TraceLog(LOG_ERROR, "An unexpected error occurred.");
+    }
 
     return 0;
 }

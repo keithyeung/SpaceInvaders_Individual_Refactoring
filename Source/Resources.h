@@ -80,7 +80,7 @@ struct Resources
 };
 
 template<typename T>
-static inline void render(std::vector<T> objects, const MyTexture& tex) noexcept {
+static inline void render(std::span<T> objects, const MyTexture& tex) noexcept {
 	for (const auto& i : objects) {
 		i.Render(tex);
 	}
