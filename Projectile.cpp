@@ -12,8 +12,8 @@ Projectile::Projectile(Vector2 p_position, int p_speed) noexcept
 void Projectile::Render(const MyTexture& tex) const noexcept
 {
 	constexpr float offset = 25.0f;
-	DrawTexture(tex.get(), position.x - offset, position.y - offset, WHITE);
-	DrawRectangleRec(rect, WHITE);
+	const Vector2 p_position = { position.x - offset, position.y - offset };
+	DrawTextureV(tex.get(), p_position, WHITE);
 }
 
 void Projectile::Update() noexcept

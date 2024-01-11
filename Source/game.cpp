@@ -6,17 +6,17 @@
 #include <span>
 
 
+
 bool is_dead(const auto& entity) noexcept {
 	return !entity.active;
 }
 
 float lineLength(Vector2 A, Vector2 B) noexcept//Uses pythagoras to calculate the length of a line
 {
-	const double length = sqrtf(pow(B.x - A.x, 2) + pow(B.y - A.y, 2));
-	return static_cast<float>(length);
+	return sqrtf(static_cast<float>(pow(B.x - A.x, 2) + pow(B.y - A.y, 2)));
 }
 
-Game::Game() 
+Game::Game() noexcept
 {
 	// creating walls 
 	SpawnWalls();
@@ -30,8 +30,6 @@ void Game::Start()
 	SpawnWalls();
 	//creating aliens
 	SpawnAliens();
-	
-
 	//creating background
 	Background newBackground;
 	newBackground.Initialize(600);
@@ -61,11 +59,6 @@ void Game::Continue()
 	gameState = State::STARTSCREEN;
 }
 
-void Game::Launch()
-{
-	//LOAD SOME RESOURCES HERE
-}
-
 void Game::Update()
 {
 	switch (gameState)
@@ -78,19 +71,9 @@ void Game::Update()
 
 
 		}
-
 		break;
 	case State::GAMEPLAY:
-		//Code
-		if (IsKeyReleased(KEY_Q))
-		{
-			End();
-		}
-
-		//Update Player
 		player.Update();
-		
-		//Update Aliens and Check if they are past player
 		for (auto& i : Aliens)
 		{
 			i.Update(); 
@@ -100,77 +83,18 @@ void Game::Update()
 				End();
 			}
 		}
-
-		//End game if player dies
 		if (player.lives < 1)
 		{
 			End();
 		}
-
-		//Spawn new aliens if aliens run out
 		if (Aliens.size() < 1)
 		{
 			SpawnAliens();
 		}
+		UpdateGamePlay();
 
-		//UPDATE PROJECTILE
-		for (auto& playerBullet : PlayerBullets)
-		{
-			playerBullet.Update();
-		}
-		for (auto& enemyBullet : EnemyBullets)
-		{
-			enemyBullet.Update();
-		}
-		for (auto& wall : Walls)
-		{
-			wall.Update();
-		}
-
-		//CHECK ALL COLLISONS HERE
-		for (auto& enemyBullet : EnemyBullets)
-		{
-			for (auto& wall : Walls)
-			{
-				const float Wallradius = 60.0f;
-				if (CheckCollisionCircleRec(wall.position, Wallradius, enemyBullet.rect))
-				{
-					enemyBullet.active = false;
-					wall.health -= 1;
-				}
-			}
-
-			if (CheckCollisionCircleRec(player.position, PLAYER_RADIUS, enemyBullet.rect))
-			{
-				enemyBullet.active = false;
-				player.lives -= 1;
-			}
-		}
-
-
-		for (auto& playerBullet : PlayerBullets)
-		{
-			for (auto& wall : Walls)
-			{
-				const float Wallradius = 60.0f;
-				if (CheckCollisionCircleRec(wall.position, Wallradius, playerBullet.rect))
-				{
-					playerBullet.active = false;
-					wall.health -= 1;
-				}
-			}
-
-			for (auto& alien : Aliens)
-			{
-				const Vector2 alienCollisionPosOffset = { alien.position.x + 50 , alien.position.y + 50 };
-				if (CheckCollisionCircleRec(alienCollisionPosOffset, alien.radius, playerBullet.rect))
-				{
-					playerBullet.active = false;
-					alien.active = false;
-					score += 100;
-				}
-			}
-		}
+		CollisionForAlienBullets();
+		CollisionForPlayerBullets();
 
 		//MAKE PROJECTILE
 		if (IsKeyPressed(KEY_SPACE))
@@ -179,7 +103,6 @@ void Game::Update()
 			constexpr int speed = 15;
 			PlayerBullets.push_back(Projectile(spawnPosition, speed));
 		}
-
 		//Aliens Shooting
 		shootTimer += 1;
 		if (shootTimer > 59) //once per second
@@ -190,21 +113,13 @@ void Game::Update()
 			{
 				randomAlienIndex = rand() % Aliens.size();
 			}
-
 			Vector2 spawnPosition = Aliens[randomAlienIndex].position;
 			spawnPosition.y += 40;
 			constexpr int speed = -15;
-
 			EnemyBullets.push_back(Projectile(spawnPosition, speed));
 			shootTimer = 0;
 		}
-
-		// REMOVE INACTIVE/DEAD ENITITIES
-		std::erase_if(PlayerBullets, is_dead<Projectile>);
-		std::erase_if(EnemyBullets, is_dead<Projectile>);
-		std::erase_if(Aliens, is_dead<Alien>);
-		std::erase_if(Walls, is_dead<Wall>);
-
+		RemoveDeadEntities();
 	break;
 	case State::ENDSCREEN:
 		//Code
@@ -241,7 +156,6 @@ void Game::Update()
 
 					key = GetCharPressed();  // Check next character in the queue
 				}
-
 				//Remove chars 
 				if (IsKeyPressed(KEY_BACKSPACE))
 				{
@@ -260,9 +174,6 @@ void Game::Update()
 			{
 				framesCounter = 0;
 			}
-
-			// If the name is right legth and enter is pressed, exit screen by setting highscore to false and add 
-			// name + score to scoreboard
 			if (letterCount > 0 && letterCount < 9 && IsKeyReleased(KEY_ENTER))
 			{
 				std::string nameEntry(name);
@@ -271,10 +182,7 @@ void Game::Update()
 
 				newHighScore = false;
 			}
-
-
 		}
-
 		break;
 	default:
 		//SHOULD NOT HAPPEN
@@ -283,9 +191,14 @@ void Game::Update()
 }
 
 #include "Resources.h"
+void Game::UpdateGamePlay() noexcept
+{
+	update(std::span(PlayerBullets));
+	update(std::span(EnemyBullets));
+	update(std::span(Walls));
+}
 
-
-void Game::Render()
+void Game::Render() noexcept
 {
 	BeginDrawing();
 	ClearBackground(BLACK);
@@ -302,32 +215,25 @@ void Game::Render()
 		if (newHighScore)
 		{
 			DrawText("NEW HIGHSCORE!", 600, 300, 60, YELLOW);
-
 			// BELOW CODE IS FOR NAME INPUT RENDER
 			DrawText("PLACE MOUSE OVER INPUT BOX!", 600, 400, 20, YELLOW);
 
 			DrawRectangleRec(textBox, LIGHTGRAY);
 			if (mouseOnText)
 			{
-				// HOVER CONFIRMIATION
 				DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
 			}
 			else
 			{
 				DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
 			}
-
-			//Draw the name being typed out
 			DrawText(name, (int)textBox.x + 5, (int)textBox.y + 8, 40, MAROON);
-
-			//Draw the text explaining how many characters are used
 			DrawText(TextFormat("INPUT CHARS: %i/%i", letterCount, 8), 600, 600, 20, YELLOW);
 
 			if (mouseOnText)
 			{
 				if (letterCount < 9)
 				{
-					// Draw blinking underscore char
 					if (((framesCounter / 20) % 2) == 0)
 					{
 						DrawText("_", (int)textBox.x + 8 + MeasureText(name, 40), (int)textBox.y + 12, 40, MAROON);
@@ -336,25 +242,17 @@ void Game::Render()
 				}
 				else
 				{
-					//Name needs to be shorter
 					DrawText("Press BACKSPACE to delete chars...", 600, 650, 20, YELLOW);
 				}
-				
-			}
-
-			// Explain how to continue when name is input
+			}			
 			if (letterCount > 0 && letterCount < 9)
 			{
 				DrawText("PRESS ENTER TO CONTINUE", 600, 800, 40, YELLOW);
 			}
-
 		}
 		else {
-			// If no highscore or name is entered, show scoreboard and call it a day
 			DrawText("PRESS ENTER TO CONTINUE", 600, 200, 40, YELLOW);
-
 			DrawText("LEADERBOARD", 50, 100, 40, YELLOW);
-
 			for (int i = 0; i < Leaderboard.size(); i++)
 			{
 				char* tempNameDisplay = Leaderboard[i].name.data(); // use string
@@ -364,7 +262,6 @@ void Game::Render()
 		}
 		break;
 	default:
-		//SHOULD NOT HAPPEN
 		break;
 	}
 	EndDrawing();
@@ -415,6 +312,63 @@ void Game::SpawnWalls()
 	}
 }
 
+void Game::RemoveDeadEntities() noexcept
+{
+	std::erase_if(PlayerBullets, is_dead<Projectile>);
+	std::erase_if(EnemyBullets, is_dead<Projectile>);
+	std::erase_if(Aliens, is_dead<Alien>);
+	std::erase_if(Walls, is_dead<Wall>);
+}
+
+void Game::CollisionForAlienBullets() noexcept
+{
+	for (auto& enemyBullet : EnemyBullets)
+	{
+		for (auto& wall : Walls)
+		{
+			const float Wallradius = 60.0f;
+			if (CheckCollisionCircleRec(wall.position, Wallradius, enemyBullet.rect))
+			{
+				enemyBullet.active = false;
+				wall.health -= 1;
+			}
+		}
+
+		if (CheckCollisionCircleRec(player.position, PLAYER_RADIUS, enemyBullet.rect))
+		{
+			enemyBullet.active = false;
+			player.lives -= 1;
+		}
+	}
+}
+
+void Game::CollisionForPlayerBullets() noexcept
+{
+	for (auto& playerBullet : PlayerBullets)
+	{
+		for (auto& wall : Walls)
+		{
+			constexpr float Wallradius = 60.0f;
+			if (CheckCollisionCircleRec(wall.position, Wallradius, playerBullet.rect))
+			{
+				playerBullet.active = false;
+				wall.health -= 1;
+			}
+		}
+
+		for (auto& alien : Aliens)
+		{
+			const Vector2 alienCollisionPosOffset = { alien.position.x + 50 , alien.position.y + 50 };
+			if (CheckCollisionCircleRec(alienCollisionPosOffset, alien.radius, playerBullet.rect))
+			{
+				playerBullet.active = false;
+				alien.active = false;
+				score += 100;
+			}
+		}
+	}
+}
+
 bool Game::CheckNewHighScore() noexcept
 {
 	return (score > Leaderboard.back().score);
@@ -436,29 +390,12 @@ void Game::InsertNewHighScore(std::string name)
 			Leaderboard.pop_back();
 
 			i = Leaderboard.size();
-
 		}
 	}
 }
 
-void Game::LoadLeaderboard()
-{
-	// CLEAR LEADERBOARD
-
-	// OPEN FILE
-
-	// READ DATA
-
-	// WRITE DATA ONTO LEADERBOARD
-
-	//CLOSE FILE
-}
-
 void Game::SaveLeaderboard()
 {
-	// SAVE LEADERBOARD AS ARRAY
-
-	// OPEN FILE
 	std::fstream file;
 
 	file.open("Leaderboard");
@@ -472,11 +409,6 @@ void Game::SaveLeaderboard()
 	{
 		std::cout << "file found \n";
 	}
-	// CLEAR FILE
-
-	// WRITE ARRAY DATA INTO FILE
-
-	// CLOSE FILE
 }
 
 
@@ -498,61 +430,4 @@ void Background::Render() const noexcept
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*LEGACY CODE
-	// our objective is to calculate the distance between the closest point of the line to the centre of the circle,
-	// and determine if it is shorter than the radius.
-
-	// we can imagine the edges of the line and circle centre to form a triangle. calculating the height of the
-	// triangle will give us the distance, if the line serves as the base
-
-	// simplify variables
-	Vector2 A = lineStart;
-	Vector2 B = lineEnd;
-	Vector2 C = circlePos;
-
-	// calculate area using determinant method
-
-	float triangle_area = fabsf(A.x * (B.y - C.y) + B.x * (C.y - A.y) + C.x * (A.y - B.y)) / 2;
-
-
-	// Caculate vectors AB to calculate base length
-	Vector2 AB;
-	AB.x = B.x - A.x;
-	AB.y = B.y - A.y;
-
-	//get the base length
-	float trangle_base_length = (float)sqrt(pow(AB.x, 2) + pow(AB.y, 2));
-
-	// we double the area to turn in into a rectangle, and then divide the base length to get the height.
-	float triangle_height = (triangle_area * 2 ) / trangle_base_length;
-
-	std::cout << triangle_area << "\n";
-
-	if (triangle_height < circleRadius)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-
-
-	*/
 

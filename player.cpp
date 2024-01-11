@@ -3,7 +3,8 @@
 void Player::Render(Texture2D p_texture) noexcept
 {
 	constexpr float offset = 50.0f;
-	DrawTexture(p_texture, position.x - offset, position.y - offset, WHITE);
+	const Vector2 p_position{ position.x - offset, position.y - offset };
+	DrawTextureV(p_texture, p_position, WHITE);
 }
 
 void Player::Update() noexcept

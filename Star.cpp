@@ -3,7 +3,7 @@
 
 Star::Star(float initialX, float initialY) noexcept : position{ initialX, initialY }
 {
-	size = GetRandomValueF(0.5f, 2.0f);
+	size = GetRandomValueF(1, 4);
 }
 
 void Star::Render() const noexcept

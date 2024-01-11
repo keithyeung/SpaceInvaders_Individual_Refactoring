@@ -20,6 +20,9 @@ static inline float GetRandomValueF(int x, int y) noexcept {
 	return static_cast<float>(GetRandomValue(x, y));
 }
 
+static inline constexpr int GetIntValue(float x) noexcept {
+	return static_cast<int>(x);
+}
 
 struct MyTexture
 {
@@ -83,5 +86,12 @@ template<typename T>
 static inline void render(std::span<T> objects, const MyTexture& tex) noexcept {
 	for (const auto& i : objects) {
 		i.Render(tex);
+	}
+}
+
+template<typename T>
+static inline void update(std::span<T> objects) noexcept {
+	for (auto& i : objects) {
+		i.Update();
 	}
 }

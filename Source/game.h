@@ -49,26 +49,27 @@ struct Game
 	bool newHighScore = false;
 
 	//Game Constructor
-	Game();
+	Game() noexcept;
 
 	void Start();
 	void End();
 
 	void Continue();
-	void Launch();
 
 	void Update();
-	void Render();
+	void Render() noexcept;
 	void RenderGamePlay() noexcept;
+	void UpdateGamePlay() noexcept;
 
 	void SpawnAliens();
 	void SpawnWalls();
+	void RemoveDeadEntities() noexcept;
+	void CollisionForAlienBullets() noexcept;
+	void CollisionForPlayerBullets() noexcept;
 
 	bool CheckNewHighScore() noexcept;
 
 	void InsertNewHighScore(std::string name);
-
-	void LoadLeaderboard();
 	void SaveLeaderboard();
 
 	// Entity Storage and Resources

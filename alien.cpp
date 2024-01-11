@@ -16,6 +16,6 @@ bool Alien::needToTurn() const noexcept{
 
 void Alien::Render(const MyTexture& tex) const noexcept
 {
-	DrawTexture(tex.get(), position.x, position.y, WHITE);
+	DrawTextureV(tex.get(), position, WHITE);
 }
 
