@@ -1,4 +1,14 @@
 #pragma once
+#include <codeanalysis\warnings.h>
+
+#pragma warning(push)
+
+#pragma warning(disable:ALL_CODE_ANALYSIS_WARNINGS)
+
+#include "raylib.h"
+
+#pragma warning(pop)
+
 #include "raylib.h"
 #include <vector>
 #include "Resources.h"
@@ -21,7 +31,7 @@ enum struct State
 struct PlayerData
 {
 	std::string name;
-	int score;
+	int score{};
 };
 
 struct Background
@@ -47,10 +57,10 @@ struct Game
 
 	bool newHighScore = false;
 
-	Game() noexcept;
+	Game();
 
 	void Start();
-	void End();
+	void End() noexcept;
 
 	void Continue();
 

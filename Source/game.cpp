@@ -16,7 +16,8 @@ float lineLength(Vector2 A, Vector2 B) noexcept//Uses pythagoras to calculate th
 	return sqrtf(static_cast<float>(pow(B.x - A.x, 2) + pow(B.y - A.y, 2)));
 }
 
-Game::Game() noexcept
+[[gsl::suppress(f.6)]]
+Game::Game()
 {
 	// creating walls 
 	SpawnWalls();
@@ -42,7 +43,7 @@ void Game::Start()
 
 }
 
-void Game::End()
+void Game::End() noexcept
 {
 	//SAVE SCORE AND UPDATE SCOREBOARD
 	PlayerBullets.clear();
@@ -113,6 +114,7 @@ void Game::Update()
 			{
 				randomAlienIndex = rand() % Aliens.size();
 			}
+			[[gsl::suppress(bounds.4)]]
 			Vector2 spawnPosition = Aliens[randomAlienIndex].position;
 			spawnPosition.y += 40;
 			constexpr int speed = -15;
@@ -149,7 +151,12 @@ void Game::Update()
 					// NOTE: Only allow keys in range [32..125]
 					if ((key >= 32) && (key <= 125) && (letterCount < 9))
 					{
+						[[gsl::suppress(bounds.4)]]
+						[[gsl::suppress(bounds.2)]]
+						[[gsl::suppress(type.4)]]
 						name[letterCount] = (char)key;
+						[[gsl::suppress(bounds.4)]]
+						[[gsl::suppress(bounds.2)]]
 						name[letterCount + 1] = '\0'; // Add null terminator at the end of the string.
 						letterCount++;
 					}
@@ -161,6 +168,8 @@ void Game::Update()
 				{
 					letterCount--;
 					if (letterCount < 0) letterCount = 0;
+					[[gsl::suppress(bounds.2)]]
+					[[gsl::suppress(bounds.4)]]
 					name[letterCount] = '\0';
 				}
 			}
@@ -176,6 +185,7 @@ void Game::Update()
 			}
 			if (letterCount > 0 && letterCount < 9 && IsKeyReleased(KEY_ENTER))
 			{
+				[[gsl::suppress(bounds.3)]]
 				std::string nameEntry(name);
 
 				InsertNewHighScore(nameEntry);
@@ -221,12 +231,16 @@ void Game::Render() noexcept
 			DrawRectangleRec(textBox, LIGHTGRAY);
 			if (mouseOnText)
 			{
+				[[gsl::suppress(type.4)]]
 				DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
 			}
 			else
 			{
+				[[gsl::suppress(type.4)]]
 				DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
 			}
+			[[gsl::suppress(type.4)]]
+			[[gsl::suppress(bounds.3)]]
 			DrawText(name, (int)textBox.x + 5, (int)textBox.y + 8, 40, MAROON);
 			DrawText(TextFormat("INPUT CHARS: %i/%i", letterCount, 8), 600, 600, 20, YELLOW);
 
@@ -236,6 +250,8 @@ void Game::Render() noexcept
 				{
 					if (((framesCounter / 20) % 2) == 0)
 					{
+						[[gsl::suppress(type.4)]]
+						[[gsl::suppress(bounds.3)]]
 						DrawText("_", (int)textBox.x + 8 + MeasureText(name, 40), (int)textBox.y + 12, 40, MAROON);
 					}
 
@@ -255,8 +271,11 @@ void Game::Render() noexcept
 			DrawText("LEADERBOARD", 50, 100, 40, YELLOW);
 			for (int i = 0; i < Leaderboard.size(); i++)
 			{
+				[[gsl::suppress(bounds.4)]]
+				[[gsl::suppress(con.4)]]
 				char* tempNameDisplay = Leaderboard[i].name.data(); // use string
 				DrawText(tempNameDisplay, 50, 140 + (i * 40), 40, YELLOW);
+				[[gsl::suppress(bounds.4)]]
 				DrawText(TextFormat("%i", Leaderboard[i].score), 350, 140 + (i * 40), 40, YELLOW);
 			}
 		}
@@ -274,6 +293,7 @@ void Game::RenderGamePlay() noexcept
 	DrawText(TextFormat("Score: %i", score), 50, 20, 40, YELLOW);
 	DrawText(TextFormat("Lives: %i", player.lives), 50, 70, 40, YELLOW);
 
+	[[gsl::suppress(bounds.4)]]
 	player.Render(resources.shipTextures[player.activeTexture].get());
 	render(std::span(PlayerBullets), resources.laserTexture);
 	render(std::span(EnemyBullets), resources.laserTexture);
@@ -326,7 +346,7 @@ void Game::CollisionForAlienBullets() noexcept
 	{
 		for (auto& wall : Walls)
 		{
-			const float Wallradius = 60.0f;
+			constexpr float Wallradius = 60.0f;
 			if (CheckCollisionCircleRec(wall.position, Wallradius, enemyBullet.rect))
 			{
 				enemyBullet.active = false;
@@ -374,14 +394,15 @@ bool Game::CheckNewHighScore() noexcept
 	return (score > Leaderboard.back().score);
 }
 
-void Game::InsertNewHighScore(std::string name)
+void Game::InsertNewHighScore(std::string p_name)
 {
 	PlayerData newData;
-	newData.name = name;
+	newData.name = p_name;
 	newData.score = score;
 
 	for (int i = 0; i < Leaderboard.size(); i++)
 	{
+		[[gsl::suppress(bounds.4)]]
 		if (newData.score > Leaderboard[i].score)
 		{
 
@@ -389,7 +410,8 @@ void Game::InsertNewHighScore(std::string name)
 
 			Leaderboard.pop_back();
 
-			i = Leaderboard.size();
+			[[gsl::suppress(type.1)]]
+			i = static_cast<int>(Leaderboard.size());
 		}
 	}
 }

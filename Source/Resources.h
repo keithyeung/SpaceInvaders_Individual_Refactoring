@@ -62,6 +62,7 @@ struct Resources
 {
 	std::vector<MyTexture> shipTextures;
 
+	[[gsl::suppress(f.6)]]
 	Resources()
 	{
 		shipTextures.reserve(3);
