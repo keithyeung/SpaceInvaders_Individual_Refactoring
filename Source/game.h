@@ -43,12 +43,10 @@ struct Game
 	//Aliens shooting
 	float shootTimer = 0;
 
-	//Aliens stuff? (idk cause liv wrote this)
 	Rectangle rec = { 0, 0 ,0 ,0 }; 
 
 	bool newHighScore = false;
 
-	//Game Constructor
 	Game() noexcept;
 
 	void Start();

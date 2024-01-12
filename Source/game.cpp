@@ -190,7 +190,7 @@ void Game::Update()
 	}
 }
 
-#include "Resources.h"
+
 void Game::UpdateGamePlay() noexcept
 {
 	update(std::span(PlayerBullets));

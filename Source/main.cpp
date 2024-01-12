@@ -45,8 +45,7 @@ int main(void)
     {
         Window window(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
         Game game{};
-        // Main game loop
-        while (!window.ShouldClose())  // Detect window close button or ESC key
+        while (!window.ShouldClose())  
         {
             game.Update();
             game.Render();
@@ -58,11 +57,6 @@ int main(void)
     {
         std::cerr << "Exception caught: " << e.what() << std::endl;
         TraceLog(LOG_ERROR,"Exception caught : %s", e.what());
-    }
-    catch (...)
-    {
-        std::cerr << "Unknown exception caught." << std::endl;
-        TraceLog(LOG_ERROR, "An unexpected error occurred.");
     }
 
     return 0;

@@ -35,10 +35,8 @@ struct MyTexture
 			throw(std::runtime_error(std::format("Unable to load texture: {}"sv, path)));
 		}
 	}
-
 	MyTexture(const MyTexture& other) noexcept = delete;
 	MyTexture& operator=(const MyTexture& other) noexcept = delete;
-
 	MyTexture(MyTexture&& other) noexcept
 	{
 		std::swap(other.tex, tex);
@@ -48,17 +46,14 @@ struct MyTexture
 		std::swap(other.tex, tex);
 		return *this;
 	}
-
 	~MyTexture()
 	{
 		UnloadTexture(tex);
 	}
-
 	const Texture2D& get() const noexcept
 	{
 		return tex;
 	}
-
 };
 
 const Texture2D& getTexture(const MyTexture& t) noexcept;
